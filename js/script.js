@@ -10,7 +10,9 @@
     const dateElem = document.querySelector('.date');
     const mainMaxTemp = document.querySelector('.mainMaxTemp');
     const descriptionImage = document.querySelector('.flex .icon');
-    const error404 = document.querySelector('.error404')
+    const error404 = document.querySelector('.error404');
+    const statusBox = document.querySelector('.status-box');
+    const loader = document.getElementById('loader');
 
     searchInput.addEventListener('keyup', (e) => {
         if (e.key === 'Enter') {
@@ -29,9 +31,13 @@
     });
 
     function getAllInfo(city) {
+        loader.style.display = 'block';
+
         fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=c39d5ca23f810bad45bf0db794bb0da5`)
             .then(res => res.json())
             .then(data => {
+                loader.style.display = 'none';
+
                 if (data.cod === 200) {
                     showData(data);
                     console.log(data);
@@ -39,7 +45,10 @@
                     showError();
                 }
             })
-            .catch(error => showError());
+            .catch(error => {
+                loader.style.display = 'none';
+                showError();
+            });
     }
 
     function showData(data) {
@@ -47,7 +56,6 @@
         weather.style.display = 'block';
         weather.classList.remove("loading");
 
-        // تغییرات داده‌ها
         tempElem.textContent = `${Math.floor(data.main.temp - 273.15)} °C`;
         cityElem.textContent = `${data.name}, ${data.sys.country}`;
         humidityElem.textContent = `Humidity: ${data.main.humidity}%`;
@@ -56,10 +64,8 @@
         mainMaxTemp.textContent = `${Math.floor(data.main.temp_min - 273.15)} °C / ${Math.floor(data.main.temp_max - 273.15)} °C`;
         searchInput.value = '';
 
-        // به‌روزرسانی آیکون آب و هوا
         updateWeatherIcon(data.weather[0].main);
 
-        // نمایش داده‌ها با ترنزیشن
         document.querySelectorAll('.weather, .temp, .city, .description, .additional-info').forEach(elem => {
             elem.classList.add('show');
         });
@@ -85,11 +91,28 @@
         error404.style.display = 'flex';
         searchInput.value = '';
 
-        // پنهان کردن داده‌ها با ترنزیشن
         document.querySelectorAll('.weather, .temp, .city, .description, .additional-info').forEach(elem => {
             elem.classList.remove('show');
         });
     }
 
     searchInput.focus();
+    
+    window.addEventListener('offline', function() {
+        statusBox.classList.add('show');
+         statusBox.innerHTML = `You're offline. Please check your connection.`
+        statusBox.style.backgroundColor = '#ff4d4d';
+        setTimeout(function() {
+            statusBox.classList.remove('show');
+        }, 5000);
+    });
+    
+    window.addEventListener('online', function() {
+        statusBox.classList.add('show');
+        statusBox.innerHTML = 'Online';
+        statusBox.style.backgroundColor = 'green';
+        setTimeout(function() {
+            statusBox.classList.remove('show');
+        }, 5000);
+    });
 });

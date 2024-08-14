@@ -9,10 +9,11 @@
   font-style: normal;
 }
 
-body {
-  display: flex;
-  justify-content: center;
+.container {
+  display: flex; 
+  justify-content: center; 
   align-items: center;
+  position: relative;
   height: 100vh;
   margin: 0;
   font-family: 'Open Sans', sans-serif;
@@ -32,6 +33,7 @@ body {
   width: 100%;
   margin: 1em;
   transition: 1s ease;
+  overflow: hidden;
 }
 .search {
   display: flex;
@@ -181,4 +183,47 @@ button:hover {
 .weather.show, .temp.show, .city.show, .description.show, .additional-info.show {
   opacity: 1;
   transform: translateY(0);
+}
+
+
+.status-box {
+  display: none;
+  position: fixed;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  background-color: #ff4d4d;
+  color: white;
+  padding: 1em 2em;
+  font-size: 1.1em;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  text-align: center;
+}
+
+.status-box.show {
+  display: block;
+  opacity: 1;
+}
+
+.loader {
+  display: none;
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #3498db; 
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
